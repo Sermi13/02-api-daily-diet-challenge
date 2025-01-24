@@ -1,0 +1,47 @@
+{
+  "name": "02-api-rest-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts",
+    "knex": "node --import tsx node_modules/knex/bin/cli.js --knexfile=knexfile.ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write .",
+    "build": "tsup src"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "dotenv": "^16.4.7",
+    "fastify": "^5.2.1",
+    "knex": "^3.1.0",
+    "pg": "^8.13.1",
+    "sqlite3": "^5.1.7",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@rocketseat/eslint-config": "^2.2.2",
+    "@types/node": "^22.10.7",
+    "@types/supertest": "^6.0.2",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-promise": "^6.6.0",
+    "eslint-plugin-security": "^3.0.1",
+    "supertest": "^7.0.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.4"
+  }
+
+}
