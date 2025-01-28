@@ -11,6 +11,8 @@
     "test": "vitest",
     "lint": "eslint src --ext .ts",
     "knex": "node --import tsx node_modules/knex/bin/cli.js --knexfile=knexfile.ts",
+    "migrate:latest": "node --import tsx node_modules/knex/bin/cli.js --knexfile=knexfile.ts migrate:latest",
+    "migrate:rollback": "node --import tsx node_modules/knex/bin/cli.js --knexfile=knexfile.ts migrate:rollback",
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write .",
     "build": "tsup src"
@@ -19,6 +21,9 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
+    "@fastify/jwt": "^9.0.3",
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
     "knex": "^3.1.0",
@@ -43,5 +48,4 @@
     "typescript": "^5.7.3",
     "vitest": "^3.0.4"
   }
-
 }

@@ -10,3 +10,7 @@ db/*.db
 
 # Build
 dist
+
+
+# Tests
+file
