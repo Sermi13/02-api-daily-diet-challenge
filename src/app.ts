@@ -1,7 +1,7 @@
 import cookie from '@fastify/cookie';
+import fastifyJwt from '@fastify/jwt';
 import fastify from 'fastify';
 
-import fastifyJwt from '@fastify/jwt';
 import { env } from './env';
 import { authRoutes } from './routes/auth';
 

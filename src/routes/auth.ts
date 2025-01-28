@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
-import bcrypt from 'bcrypt';
 
+import bcrypt from 'bcrypt';
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 
@@ -29,7 +29,7 @@ export async function authRoutes(app: FastifyInstance) {
       reply.code(409).send({ code: 409, message: 'Email is already in use' });
     }
 
-    let userId = randomUUID();
+    const userId = randomUUID();
 
     const passwordHash = await bcrypt.hash(password, 6);
 

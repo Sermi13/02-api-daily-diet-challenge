@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 
 import request from 'supertest';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vitest } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest';
 
 import { app } from '../src/app';
 import { knex } from '../src/database';
