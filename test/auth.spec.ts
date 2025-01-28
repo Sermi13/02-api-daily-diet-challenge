@@ -1,13 +1,14 @@
 import { execSync } from 'child_process';
 
 import request from 'supertest';
-import { afterAll, beforeAll, beforeEach, describe, expect, test, vitest } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vitest } from 'vitest';
 
 import { app } from '../src/app';
 import { knex } from '../src/database';
 
 beforeAll(async () => {
   await app.ready();
+  execSync('npm run knex migrate:latest');
 });
 
 afterAll(async () => {
@@ -15,9 +16,10 @@ afterAll(async () => {
   await knex.destroy();
 });
 
+//Needs two delete calls since there will be some data still saved when it's called one time
 beforeEach(async () => {
-  execSync('npm run knex migrate:rollback -all');
-  execSync('npm run knex migrate:latest');
+  await knex('users').delete();
+  await knex('users').delete();
 });
 
 describe('Auth routes', () => {
