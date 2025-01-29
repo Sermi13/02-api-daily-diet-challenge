@@ -5,6 +5,7 @@ import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 
 import { knex } from '../database';
+import { AuthViewModel } from '../viewmodel/auth.viewmodel';
 
 export async function authRoutes(app: FastifyInstance) {
   app.post('/register', async (request, reply) => {
@@ -18,15 +19,15 @@ export async function authRoutes(app: FastifyInstance) {
     const _userData = createUserBodySchema.safeParse(request.body);
 
     if (!_userData.success) {
-      reply.code(400).send({ code: 400, message: _userData.error.format() });
+      return reply.code(400).send({ code: 400, message: _userData.error.format() });
     }
 
-    const { name, email, password, image } = _userData.data!;
+    const { name, email, password, image } = _userData.data;
 
     const existingUser = await knex('users').where({ email }).first();
 
     if (existingUser) {
-      reply.code(409).send({ code: 409, message: 'Email is already in use' });
+      return reply.code(409).send({ code: 409, message: 'Email is already in use' });
     }
 
     const userId = randomUUID();
@@ -45,6 +46,37 @@ export async function authRoutes(app: FastifyInstance) {
 
     const accessToken = app.jwt.sign({ id: userId }, { expiresIn: '7d' });
 
-    return reply.code(201).send({ user, accessToken });
+    return reply.code(201).send(AuthViewModel.registerToHttp(user, accessToken));
+  });
+
+  app.post('/login', async (request, reply) => {
+    const loginBodySchema = z.object({
+      email: z.string().email(),
+      password: z.string().nonempty(),
+    });
+
+    const _loginData = loginBodySchema.safeParse(request.body);
+
+    if (!_loginData.success) {
+      reply.code(400).send({ code: 400, message: _loginData.error.format() });
+    }
+
+    const { email, password } = _loginData.data!;
+
+    const user = await knex('users').where({ email }).first();
+
+    if (!user) {
+      return reply.code(401).send({ code: 401, message: 'Unauthorized' });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return reply.code(401).send({ code: 401, message: 'Unauthorized' });
+    }
+
+    const accessToken = app.jwt.sign({ id: user.id }, { expiresIn: '7d' });
+
+    return reply.code(200).send(AuthViewModel.loginToHttp(user, accessToken));
   });
 }

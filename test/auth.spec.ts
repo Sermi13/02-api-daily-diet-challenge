@@ -77,4 +77,95 @@ describe('Auth routes', () => {
       });
     });
   });
+
+  describe('Login', () => {
+    test('User can log in with valid credentials', async () => {
+      const userData = {
+        email: 'johndoe@example.com',
+        password: '123456Aa!',
+      };
+
+      await request(app.server)
+        .post('/auth/register')
+        .send({
+          name: 'John Doe',
+          ...userData,
+        });
+
+      const response = await request(app.server).post('/auth/login').send(userData).expect(200);
+
+      expect(response.body).toEqual({
+        user: expect.objectContaining({
+          id: expect.any(String),
+          name: expect.any(String),
+          email: expect.any(String),
+          created_at: expect.any(String),
+        }),
+        accessToken: expect.any(String),
+      });
+    });
+
+    test('Fails when required fields are missing', async () => {
+      await request(app.server).post('/auth/login').send({}).expect(400);
+    });
+
+    test('Fails when email is invalid', async () => {
+      await request(app.server)
+        .post('/auth/login')
+        .send({ email: 'invalid-email', password: '123456Aa!' })
+        .expect(400);
+    });
+
+    test('Fails when password is incorrect', async () => {
+      const userData = {
+        email: 'johndoe@example.com',
+        password: '123456Aa!',
+      };
+
+      await request(app.server)
+        .post('/auth/register')
+        .send({
+          name: 'John Doe',
+          ...userData,
+        });
+
+      await request(app.server)
+        .post('/auth/login')
+        .send({ email: userData.email, password: 'WrongPass123!' })
+        .expect(401);
+    });
+
+    test('Fails when user does not exist', async () => {
+      await request(app.server)
+        .post('/auth/login')
+        .send({ email: 'nonexistent@example.com', password: '123456Aa!' })
+        .expect(401);
+    });
+
+    test('Should receive user data and Access Token on successful login', async () => {
+      const userData = {
+        email: 'johndoe@example.com',
+        password: '123456Aa!',
+      };
+
+      await request(app.server)
+        .post('/auth/register')
+        .send({
+          name: 'John Doe',
+          ...userData,
+        });
+
+      const response = await request(app.server).post('/auth/login').send(userData).expect(200);
+
+      expect(response.body).toEqual({
+        user: expect.objectContaining({
+          id: expect.any(String),
+          name: expect.any(String),
+          email: expect.any(String),
+          created_at: expect.any(String),
+        }),
+        accessToken: expect.any(String),
+      });
+    });
+  });
 });
