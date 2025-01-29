@@ -9,7 +9,7 @@
 ## 📌 Features
 
 - [x] Basic user Auth
-- [ ] Create new meal
+- [x] Create new meal
 - [ ] Update meal
 - [ ] Delete meal
 - [ ] List meals
@@ -19,7 +19,7 @@
 ## 📋 To-Do List
 
 - [x] Basic user Auth
-- [ ] Create new meal
+- [x] Create new meal
 - [ ] Update meal
 - [ ] Delete meal
 - [ ] List meals

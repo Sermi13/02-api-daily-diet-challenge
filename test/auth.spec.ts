@@ -13,6 +13,8 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await app.close();
+  await knex('users').delete();
+  await knex('users').delete();
   await knex.destroy();
 });
 

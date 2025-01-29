@@ -11,5 +11,13 @@ declare module 'knex/types/tables' {
       image: string;
       created_at: string;
     };
+    meals: {
+      id: string;
+      user_id: string;
+      name: string;
+      description: string;
+      in_diet: boolean;
+      created_at: string;
+    };
   }
 }
