@@ -36,129 +36,262 @@ afterAll(async () => {
   await knex.destroy();
 });
 
-describe('Update', () => {
-  test('User can update a meal', async () => {
-    // First, create a meal to update
-    const createResponse = await request(app.server)
-      .post('/meals')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        name: 'Grilled Chicken Salad',
-        description: 'Healthy meal with grilled chicken and veggies',
-        in_diet: true,
-      })
-      .expect(201);
+describe('Meal routes', () => {
+  describe('Create', () => {
+    test('User can create a meal', async () => {
+      const response = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
 
-    const mealId = createResponse.body.meal.id;
+      expect(response.body).toEqual({
+        meal: expect.objectContaining({
+          id: expect.any(String),
+          user_id: expect.any(String),
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+          created_at: expect.any(String),
+        }),
+      });
+    });
+    test('Missing property', async () => {
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          in_diet: true,
+        })
+        .expect(400);
+    });
+    test('Invalid authorization', async () => {
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer invalidtoken`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(401);
+    });
+  });
+  describe('Update', () => {
+    test('User can update a meal', async () => {
+      // First, create a meal to update
+      const createResponse = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
 
-    // Now, update the created meal
-    const updateResponse = await request(app.server)
-      .put(`/meals/${mealId}`)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        name: 'Updated Grilled Chicken Salad',
-        description: 'Updated healthy meal with grilled chicken and veggies',
-        in_diet: false,
-      })
-      .expect(200);
+      const mealId = createResponse.body.meal.id;
 
-    expect(updateResponse.body).toEqual({
-      meal: expect.objectContaining({
-        id: mealId, // should match the original meal's id
-        user_id: expect.any(String),
-        name: 'Updated Grilled Chicken Salad',
-        description: 'Updated healthy meal with grilled chicken and veggies',
-        in_diet: false, // updated value
-        created_at: expect.any(String),
-      }),
+      // Now, update the created meal
+      const updateResponse = await request(app.server)
+        .put(`/meals/${mealId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Updated Grilled Chicken Salad',
+          description: 'Updated healthy meal with grilled chicken and veggies',
+          in_diet: false,
+        })
+        .expect(200);
+
+      expect(updateResponse.body).toEqual({
+        meal: expect.objectContaining({
+          id: mealId, // should match the original meal's id
+          user_id: expect.any(String),
+          name: 'Updated Grilled Chicken Salad',
+          description: 'Updated healthy meal with grilled chicken and veggies',
+          in_diet: false, // updated value
+          created_at: expect.any(String),
+        }),
+      });
+    });
+
+    test('Cannot update meal without required fields', async () => {
+      // First, create a meal to update
+      const createResponse = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      const mealId = createResponse.body.meal.id;
+
+      // Now, try updating without a required field (e.g., description)
+      await request(app.server)
+        .put(`/meals/${mealId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Updated Grilled Chicken Salad',
+          in_diet: false,
+        })
+        .expect(400); // Expect 400 for missing description
+    });
+
+    test('Unauthorized user cannot update meal', async () => {
+      // First, create a meal to update
+      const createResponse = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      const mealId = createResponse.body.meal.id;
+
+      // Try updating the meal with an invalid token
+      await request(app.server)
+        .put(`/meals/${mealId}`)
+        .set('Authorization', `Bearer invalidtoken`)
+        .send({
+          name: 'Updated Grilled Chicken Salad',
+          description: 'Updated healthy meal with grilled chicken and veggies',
+          in_diet: false,
+        })
+        .expect(401); // Expect unauthorized response
+    });
+
+    test('User cannot update a meal they did not create', async () => {
+      // First, create a meal with the original user
+      const createResponse = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      const mealId = createResponse.body.meal.id;
+
+      // Create another user and get a new access token for them
+      const otherUserData = {
+        name: 'Jane Doe',
+        email: `${randomUUID()}@example.com`,
+        password: '123456Aa!',
+      };
+
+      const otherUserResponse = await request(app.server)
+        .post('/auth/register')
+        .send(otherUserData);
+
+      const otherUserToken = otherUserResponse.body.accessToken;
+
+      // Try updating the meal with the second user's token (they shouldn't be able to update it)
+      await request(app.server)
+        .put(`/meals/${mealId}`)
+        .set('Authorization', `Bearer ${otherUserToken}`)
+        .send({
+          name: 'Updated Grilled Chicken Salad',
+          description: 'Updated healthy meal with grilled chicken and veggies',
+          in_diet: false,
+        })
+        .expect(403); // Expect forbidden error as the user didn't create the meal
     });
   });
 
-  test('Cannot update meal without required fields', async () => {
-    // First, create a meal to update
-    const createResponse = await request(app.server)
-      .post('/meals')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        name: 'Grilled Chicken Salad',
-        description: 'Healthy meal with grilled chicken and veggies',
-        in_diet: true,
-      })
-      .expect(201);
+  describe('Delete', () => {
+    test('User can delete a meal', async () => {
+      // First, create a meal to delete
+      const createResponse = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
 
-    const mealId = createResponse.body.meal.id;
+      const mealId = createResponse.body.meal.id;
 
-    // Now, try updating without a required field (e.g., description)
-    await request(app.server)
-      .put(`/meals/${mealId}`)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        name: 'Updated Grilled Chicken Salad',
-        in_diet: false,
-      })
-      .expect(400); // Expect 400 for missing description
-  });
+      // Now, delete the created meal
+      await request(app.server)
+        .delete(`/meals/${mealId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200); // Expect success (status 200)
 
-  test('Unauthorized user cannot update meal', async () => {
-    // First, create a meal to update
-    const createResponse = await request(app.server)
-      .post('/meals')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        name: 'Grilled Chicken Salad',
-        description: 'Healthy meal with grilled chicken and veggies',
-        in_diet: true,
-      })
-      .expect(201);
+      // Try to fetch the deleted meal (should not exist)
+      await request(app.server)
+        .get(`/meals/${mealId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(404); // Expect 404 as the meal should not exist anymore
+    });
 
-    const mealId = createResponse.body.meal.id;
+    test('Cannot delete a meal without proper authorization', async () => {
+      // First, create a meal to delete
+      const createResponse = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
 
-    // Try updating the meal with an invalid token
-    await request(app.server)
-      .put(`/meals/${mealId}`)
-      .set('Authorization', `Bearer invalidtoken`)
-      .send({
-        name: 'Updated Grilled Chicken Salad',
-        description: 'Updated healthy meal with grilled chicken and veggies',
-        in_diet: false,
-      })
-      .expect(401); // Expect unauthorized response
-  });
+      const mealId = createResponse.body.meal.id;
 
-  test('User cannot update a meal they did not create', async () => {
-    // First, create a meal with the original user
-    const createResponse = await request(app.server)
-      .post('/meals')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        name: 'Grilled Chicken Salad',
-        description: 'Healthy meal with grilled chicken and veggies',
-        in_diet: true,
-      })
-      .expect(201);
+      // Try deleting the meal with an invalid token
+      await request(app.server)
+        .delete(`/meals/${mealId}`)
+        .set('Authorization', `Bearer invalidtoken`)
+        .expect(401); // Expect unauthorized (status 401)
+    });
 
-    const mealId = createResponse.body.meal.id;
+    test('User cannot delete a meal they did not create', async () => {
+      // First, create a meal with the original user
+      const createResponse = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
 
-    // Create another user and get a new access token for them
-    const otherUserData = {
-      name: 'Jane Doe',
-      email: `${randomUUID()}@example.com`,
-      password: '123456Aa!',
-    };
+      const mealId = createResponse.body.meal.id;
 
-    const otherUserResponse = await request(app.server).post('/auth/register').send(otherUserData);
+      // Create another user and get a new access token for them
+      const otherUserData = {
+        name: 'Jane Doe',
+        email: `${randomUUID()}@example.com`,
+        password: '123456Aa!',
+      };
 
-    const otherUserToken = otherUserResponse.body.accessToken;
+      const otherUserResponse = await request(app.server)
+        .post('/auth/register')
+        .send(otherUserData);
 
-    // Try updating the meal with the second user's token (they shouldn't be able to update it)
-    await request(app.server)
-      .put(`/meals/${mealId}`)
-      .set('Authorization', `Bearer ${otherUserToken}`)
-      .send({
-        name: 'Updated Grilled Chicken Salad',
-        description: 'Updated healthy meal with grilled chicken and veggies',
-        in_diet: false,
-      })
-      .expect(403); // Expect forbidden error as the user didn't create the meal
+      const otherUserToken = otherUserResponse.body.accessToken;
+
+      // Try deleting the meal with the second user's token (they shouldn't be able to delete it)
+      await request(app.server)
+        .delete(`/meals/${mealId}`)
+        .set('Authorization', `Bearer ${otherUserToken}`)
+        .expect(403); // Expect forbidden (status 403) as the user didn't create the meal
+    });
   });
 });

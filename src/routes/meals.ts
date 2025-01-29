@@ -73,4 +73,21 @@ export async function mealsRoutes(app: FastifyInstance) {
 
     return reply.code(200).send(MealsViewModel.createToHttp(mealUpdated));
   });
+
+  app.delete('/:id', { preHandler: [jwtVerify] }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const mealFound = await knex('meals').where({ id }).first();
+
+    if (!mealFound) {
+      return reply.code(404).send({ code: 404, message: 'Not found' });
+    }
+
+    if (mealFound.user_id !== request.userData.id) {
+      return reply.code(403).send({ code: 404, message: 'Forbidden' });
+    }
+
+    await knex('meals').where({ id }).delete();
+
+    return reply.code(200).send();
+  });
 }

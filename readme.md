@@ -11,7 +11,7 @@
 - [x] Basic user Auth
 - [x] Create new meal
 - [x] Update meal
-- [ ] Delete meal
+- [x] Delete meal
 - [ ] List meals
 - [ ] Get meal details
 - [ ] Get summary from all meals
@@ -21,7 +21,7 @@
 - [x] Basic user Auth
 - [x] Create new meal
 - [x] Update meal
-- [ ] Delete meal
+- [x] Delete meal
 - [ ] List meals
 - [ ] Get meal details
 - [ ] Get summary from all meals
