@@ -45,6 +45,7 @@ describe('Meal routes', () => {
         .send({
           name: 'Grilled Chicken Salad',
           description: 'Healthy meal with grilled chicken and veggies',
+          date: '2025-01-30T00:30:46Z',
           in_diet: true,
         })
         .expect(201);
@@ -55,6 +56,7 @@ describe('Meal routes', () => {
           user_id: expect.any(String),
           name: 'Grilled Chicken Salad',
           description: 'Healthy meal with grilled chicken and veggies',
+          date: '2025-01-30T00:30:46Z',
           in_diet: true,
           created_at: expect.any(String),
         }),
@@ -66,6 +68,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           in_diet: true,
         })
         .expect(400);
@@ -76,6 +79,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer invalidtoken`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -90,6 +94,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -103,6 +108,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Updated Grilled Chicken Salad',
+          date: '2026-01-30T00:30:46Z',
           description: 'Updated healthy meal with grilled chicken and veggies',
           in_diet: false,
         })
@@ -113,6 +119,7 @@ describe('Meal routes', () => {
           id: mealId, // should match the original meal's id
           user_id: expect.any(String),
           name: 'Updated Grilled Chicken Salad',
+          date: '2026-01-30T00:30:46Z',
           description: 'Updated healthy meal with grilled chicken and veggies',
           in_diet: false, // updated value
           created_at: expect.any(String),
@@ -127,6 +134,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -152,6 +160,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -165,6 +174,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer invalidtoken`)
         .send({
           name: 'Updated Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Updated healthy meal with grilled chicken and veggies',
           in_diet: false,
         })
@@ -178,6 +188,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -204,6 +215,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${otherUserToken}`)
         .send({
           name: 'Updated Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Updated healthy meal with grilled chicken and veggies',
           in_diet: false,
         })
@@ -219,6 +231,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -246,6 +259,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -267,6 +281,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -302,6 +317,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -312,6 +328,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Vegan Buddha Bowl',
+          date: '2025-01-30T00:30:46Z',
           description: 'A healthy and vegan meal with grains and vegetables',
           in_diet: true,
         })
@@ -330,12 +347,14 @@ describe('Meal routes', () => {
           expect.objectContaining({
             id: createResponse1.body.meal.id,
             name: 'Grilled Chicken Salad',
+            date: '2025-01-30T00:30:46Z',
             description: 'Healthy meal with grilled chicken and veggies',
             in_diet: true,
           }),
           expect.objectContaining({
             id: createResponse2.body.meal.id,
             name: 'Vegan Buddha Bowl',
+            date: '2025-01-30T00:30:46Z',
             description: 'A healthy and vegan meal with grains and vegetables',
             in_diet: true,
           }),
@@ -350,6 +369,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -395,7 +415,7 @@ describe('Meal routes', () => {
         .expect(401); // Expect unauthorized (status 401)
     });
   });
-  describe('Get Meal details', () => {
+  describe('Details', () => {
     test('User can get details of a single meal', async () => {
       // First, create a meal for the user
       const createResponse = await request(app.server)
@@ -403,6 +423,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -421,6 +442,7 @@ describe('Meal routes', () => {
         meal: {
           id: mealId,
           user_id: expect.any(String), // Expecting a user ID in the response
+          date: '2025-01-30T00:30:46Z',
           name: 'Grilled Chicken Salad',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
@@ -436,6 +458,7 @@ describe('Meal routes', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
           description: 'Healthy meal with grilled chicken and veggies',
           in_diet: true,
         })
@@ -477,6 +500,178 @@ describe('Meal routes', () => {
         .get('/meals/nonexistentMealId') // Pass a non-existent meal ID
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(404); // Expect not found (status 404)
+    });
+  });
+
+  describe('Summary', () => {
+    test('User can retrieve total meals registered', async () => {
+      // Create meals for the user
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Pasta',
+          date: '2025-01-30T00:30:46Z',
+          description: 'Delicious pasta with sauce',
+          in_diet: false,
+        })
+        .expect(201);
+
+      // Fetch metrics
+      const response = await request(app.server)
+        .get(`/meals/summary`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body).toEqual({
+        summary: expect.objectContaining({
+          totalMeals: 2,
+        }),
+      });
+    });
+
+    test('User can retrieve total meals in diet', async () => {
+      // Create meals for the user (1 in diet, 1 out of diet)
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Pasta',
+          date: '2025-01-30T00:30:46Z',
+          description: 'Delicious pasta with sauce',
+          in_diet: false,
+        })
+        .expect(201);
+
+      // Fetch metrics
+      const response = await request(app.server)
+        .get(`/meals/summary`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body).toEqual({
+        summary: expect.objectContaining({
+          totalMealsInDiet: 1, // Only 1 meal in diet
+        }),
+      });
+    });
+
+    test('User can retrieve total meals out of diet', async () => {
+      // Create meals for the user (1 in diet, 1 out of diet)
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          date: '2025-01-30T00:30:46Z',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Pasta',
+          date: '2025-01-30T00:30:46Z',
+          description: 'Delicious pasta with sauce',
+          in_diet: false,
+        })
+        .expect(201);
+
+      // Fetch metrics
+      const response = await request(app.server)
+        .get(`/meals/summary`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body).toEqual({
+        summary: expect.objectContaining({
+          totalMealsOutOfDiet: 1, // Only 1 meal out of diet
+        }),
+      });
+    });
+
+    test('User can retrieve longest streak of meals in diet', async () => {
+      // Create a streak of meals in diet and some meals out of diet
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          date: '2025-01-20T00:30:46Z',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Salmon with Veggies',
+          date: '2025-01-21T00:30:46Z',
+          description: 'Healthy meal with salmon and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Pasta',
+          date: '2025-01-24T00:30:46Z',
+          description: 'Delicious pasta with sauce',
+          in_diet: false,
+        })
+        .expect(201);
+
+      await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Chicken Salad',
+          date: '2025-01-25T00:30:46Z',
+          description: 'Healthy meal with chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      // Fetch metrics
+      const response = await request(app.server)
+        .get(`/meals/summary`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body).toEqual({
+        summary: expect.objectContaining({
+          longestDietStreak: 2, // The longest streak is 2 meals in diet (Grilled Chicken Salad + Salmon with Veggies)
+        }),
+      });
     });
   });
 });

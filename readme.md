@@ -13,8 +13,8 @@
 - [x] Update meal
 - [x] Delete meal
 - [x] List meals
-- [ ] Get meal details
-- [ ] Get summary from all meals
+- [x] Get meal details
+- [x] Get summary from all meals
 
 ## 📋 To-Do List
 
@@ -23,8 +23,8 @@
 - [x] Update meal
 - [x] Delete meal
 - [x] List meals
-- [ ] Get meal details
-- [ ] Get summary from all meals
+- [x] Get meal details
+- [x] Get summary from all meals
 - [ ] Deploy on Render
 
 ---

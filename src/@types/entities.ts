@@ -11,6 +11,7 @@ export type Meal = {
   id: string;
   user_id: string;
   name: string;
+  date: string;
   description: string;
   in_diet: boolean;
   created_at: string;

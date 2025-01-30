@@ -7,6 +7,7 @@ export class MealsViewModel {
         id: meal.id,
         user_id: meal.user_id,
         name: meal.name,
+        date: meal.date,
         description: meal.description,
         in_diet: Boolean(meal.in_diet),
         created_at: meal.created_at,
@@ -19,6 +20,7 @@ export class MealsViewModel {
         id: meal.id,
         user_id: meal.user_id,
         name: meal.name,
+        date: meal.date,
         description: meal.description,
         in_diet: Boolean(meal.in_diet),
         created_at: meal.created_at,
@@ -32,6 +34,7 @@ export class MealsViewModel {
           id: meal.id,
           user_id: meal.user_id,
           name: meal.name,
+          date: meal.date,
           description: meal.description,
           in_diet: Boolean(meal.in_diet),
           created_at: meal.created_at,
@@ -45,9 +48,26 @@ export class MealsViewModel {
         id: meal.id,
         user_id: meal.user_id,
         name: meal.name,
+        date: meal.date,
         description: meal.description,
         in_diet: Boolean(meal.in_diet),
         created_at: meal.created_at,
+      },
+    };
+  }
+
+  static summaryToHttp(data: {
+    totalMeals: number;
+    totalMealsInDiet: number;
+    totalMealsOutOfDiet: number;
+    longestDietStreak: number;
+  }) {
+    return {
+      summary: {
+        totalMeals: data.totalMeals,
+        totalMealsInDiet: data.totalMealsInDiet,
+        totalMealsOutOfDiet: data.totalMealsOutOfDiet,
+        longestDietStreak: data.longestDietStreak,
       },
     };
   }
