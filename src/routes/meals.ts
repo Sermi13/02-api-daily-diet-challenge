@@ -71,7 +71,7 @@ export async function mealsRoutes(app: FastifyInstance) {
       })
       .returning(['id', 'user_id', 'name', 'description', 'in_diet', 'created_at']);
 
-    return reply.code(200).send(MealsViewModel.createToHttp(mealUpdated));
+    return reply.code(200).send(MealsViewModel.updateToHttp(mealUpdated));
   });
 
   app.delete('/:id', { preHandler: [jwtVerify] }, async (request, reply) => {
@@ -89,5 +89,11 @@ export async function mealsRoutes(app: FastifyInstance) {
     await knex('meals').where({ id }).delete();
 
     return reply.code(200).send();
+  });
+
+  app.get('/', { preHandler: [jwtVerify] }, async (request, reply) => {
+    const meals = await knex('meals').where({ user_id: request.userData.id });
+
+    return reply.code(200).send(MealsViewModel.listToHttp(meals));
   });
 }

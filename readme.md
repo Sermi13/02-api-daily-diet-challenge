@@ -12,7 +12,7 @@
 - [x] Create new meal
 - [x] Update meal
 - [x] Delete meal
-- [ ] List meals
+- [x] List meals
 - [ ] Get meal details
 - [ ] Get summary from all meals
 
@@ -22,7 +22,7 @@
 - [x] Create new meal
 - [x] Update meal
 - [x] Delete meal
-- [ ] List meals
+- [x] List meals
 - [ ] Get meal details
 - [ ] Get summary from all meals
 - [ ] Deploy on Render

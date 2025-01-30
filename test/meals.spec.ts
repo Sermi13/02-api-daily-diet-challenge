@@ -294,4 +294,105 @@ describe('Meal routes', () => {
         .expect(403); // Expect forbidden (status 403) as the user didn't create the meal
     });
   });
+  describe('List', () => {
+    test('User can list their meals', async () => {
+      // First, create two meals for the user
+      const createResponse1 = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      const createResponse2 = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Vegan Buddha Bowl',
+          description: 'A healthy and vegan meal with grains and vegetables',
+          in_diet: true,
+        })
+        .expect(201);
+
+      // Now, fetch all meals created by the user
+      const listResponse = await request(app.server)
+        .get('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      // Assert that the response contains both meals
+      expect(listResponse.body.meals).toHaveLength(2); // Two meals should be returned
+      expect(listResponse.body.meals).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: createResponse1.body.meal.id,
+            name: 'Grilled Chicken Salad',
+            description: 'Healthy meal with grilled chicken and veggies',
+            in_diet: true,
+          }),
+          expect.objectContaining({
+            id: createResponse2.body.meal.id,
+            name: 'Vegan Buddha Bowl',
+            description: 'A healthy and vegan meal with grains and vegetables',
+            in_diet: true,
+          }),
+        ]),
+      );
+    });
+
+    test('User can only list their own meals', async () => {
+      // First, create a meal for the user
+      const createResponse = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      const mealId = createResponse.body.meal.id;
+
+      // Create another user and get a new access token for them
+      const otherUserData = {
+        name: 'Jane Doe',
+        email: `${randomUUID()}@example.com`,
+        password: '123456Aa!',
+      };
+
+      const otherUserResponse = await request(app.server)
+        .post('/auth/register')
+        .send(otherUserData);
+
+      const otherUserToken = otherUserResponse.body.accessToken;
+
+      // Try fetching meals for the other user (should not list the original user's meals)
+      const otherUserListResponse = await request(app.server)
+        .get('/meals')
+        .set('Authorization', `Bearer ${otherUserToken}`)
+        .expect(200);
+
+      // Assert that the meals from the first user are not in the second user's list
+      expect(otherUserListResponse.body.meals).not.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: mealId,
+            name: 'Grilled Chicken Salad',
+          }),
+        ]),
+      );
+    });
+
+    test('Unauthorized user cannot list meals', async () => {
+      // Try listing meals with an invalid token
+      await request(app.server)
+        .get('/meals')
+        .set('Authorization', `Bearer invalidtoken`)
+        .expect(401); // Expect unauthorized (status 401)
+    });
+  });
 });
