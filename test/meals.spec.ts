@@ -395,4 +395,88 @@ describe('Meal routes', () => {
         .expect(401); // Expect unauthorized (status 401)
     });
   });
+  describe('Get Meal details', () => {
+    test('User can get details of a single meal', async () => {
+      // First, create a meal for the user
+      const createResponse = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      const mealId = createResponse.body.meal.id;
+
+      // Now, fetch details of the created meal
+      const getResponse = await request(app.server)
+        .get(`/meals/${mealId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      // Assert that the response matches the expected format and values
+      expect(getResponse.body).toEqual({
+        meal: {
+          id: mealId,
+          user_id: expect.any(String), // Expecting a user ID in the response
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+          created_at: expect.any(String), // Expecting a valid timestamp
+        },
+      });
+    });
+
+    test('User cannot get details of a meal they did not create', async () => {
+      // First, create a meal for the user
+      const createResponse = await request(app.server)
+        .post('/meals')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'Grilled Chicken Salad',
+          description: 'Healthy meal with grilled chicken and veggies',
+          in_diet: true,
+        })
+        .expect(201);
+
+      const mealId = createResponse.body.meal.id;
+
+      // Create another user and get a new access token for them
+      const otherUserData = {
+        name: 'Jane Doe',
+        email: `${randomUUID()}@example.com`,
+        password: '123456Aa!',
+      };
+
+      const otherUserResponse = await request(app.server)
+        .post('/auth/register')
+        .send(otherUserData);
+
+      const otherUserToken = otherUserResponse.body.accessToken;
+
+      // Try fetching details of the meal with the second user's token (they shouldn't be able to access it)
+      await request(app.server)
+        .get(`/meals/${mealId}`)
+        .set('Authorization', `Bearer ${otherUserToken}`)
+        .expect(403); // Expect forbidden error as the user didn't create the meal
+    });
+
+    test('Unauthorized user cannot get meal details', async () => {
+      // Try fetching meal details with an invalid token
+      await request(app.server)
+        .get('/meals/someMealId') // Pass a random meal ID
+        .set('Authorization', `Bearer invalidtoken`)
+        .expect(401); // Expect unauthorized (status 401)
+    });
+
+    test('Returns 404 if meal does not exist', async () => {
+      // Try fetching a meal with an ID that doesn't exist
+      await request(app.server)
+        .get('/meals/nonexistentMealId') // Pass a non-existent meal ID
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(404); // Expect not found (status 404)
+    });
+  });
 });

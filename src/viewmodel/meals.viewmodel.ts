@@ -39,4 +39,16 @@ export class MealsViewModel {
       }),
     };
   }
+  static detailToHttp(meal: Meal) {
+    return {
+      meal: {
+        id: meal.id,
+        user_id: meal.user_id,
+        name: meal.name,
+        description: meal.description,
+        in_diet: Boolean(meal.in_diet),
+        created_at: meal.created_at,
+      },
+    };
+  }
 }
