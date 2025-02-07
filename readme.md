@@ -25,7 +25,7 @@
 - [x] List meals
 - [x] Get meal details
 - [x] Get summary from all meals
-- [ ] Deploy on Render
+- [x] Deploy on Render
 
 ---
 
