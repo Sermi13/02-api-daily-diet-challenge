@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://t2.tudocdn.net/572277?w=1920" alt="Rocketseat Banner" />
+  <img src="https://t2.tudocdn.net/572277?w=1920" alt="Rocketseat Bannner" />
 </p>
 
 # 🚀 Daily Diet Api
